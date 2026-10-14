@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trip Assistant: demo XSS</title>
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+<main>
+  <h1>Trip Assistant: demo XSS</h1>
+  <p class="muted">Notatki użytkownika przychodzą z prawdziwego API (FastAPI). Przełącz sposób renderowania i zobacz różnicę.</p>
+
+  <section>
+    <h2>1. Logowanie</h2>
+    <input id="email" value="alice@example.com" aria-label="Email">
+    <input id="password" type="password" value="pass12345" aria-label="Hasło">
+    <button id="login">Zaloguj (utworzy konto, jeśli go nie ma)</button>
+    <p id="status" class="muted">Niezalogowany.</p>
+  </section>
+
+  <section>
+    <h2>2. Dodaj notatkę</h2>
+    <select id="preset" aria-label="Gotowa notatka">
+      <option value="Piękny szczyt, wschód o 6:10">zwykły tekst</option>
+      <option value="&lt;img src=x onerror=&quot;alert('XSS wykonany na '+location.origin)&quot;&gt;">&lt;img onerror&gt;</option>
+      <option value="&lt;b&gt;pogrubione?&lt;/b&gt; &lt;u&gt;podkreślone?&lt;/u&gt;">znaczniki HTML</option>
+    </select>
+    <textarea id="note" rows="2" aria-label="Treść notatki"></textarea>
+    <button id="add" disabled>Zapisz przez API</button>
+  </section>
+
+  <section>
+    <h2>3. Wyświetlanie</h2>
+    <select id="mode" aria-label="Sposób renderowania">
+      <option value="safe">textContent (bezpieczny)</option>
+      <option value="unsafe">innerHTML (PODATNY)</option>
+    </select>
+    <ul id="entries"></ul>
+    <h3>Kod aktualnie używanego renderera</h3>
+    <pre id="code"></pre>
+  </section>
+</main>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
